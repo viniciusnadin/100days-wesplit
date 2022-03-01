@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct FirstDayView: View {
+    
+    // Program @state is to use variables inside structs, because in structs we never mutate the parameters
+    @State private var tapCount = 0
+    
     var body: some View {
-        
         // NAVIGATION VIEW
         NavigationView {
             // FORM
@@ -31,6 +34,11 @@ struct FirstDayView: View {
                             Text("Hello, world!").padding()
                             Text("Hello, world!").padding()
                             Text("Hello, world!").padding()
+                            
+                            // Button Element
+                            Button("Taps: \(self.tapCount)") {
+                                self.tapCount += 1
+                            }
                         }
                     }
                     // WE SET A TITLE TO OUR VIEW
