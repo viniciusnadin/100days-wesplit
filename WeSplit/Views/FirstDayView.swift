@@ -11,6 +11,9 @@ struct FirstDayView: View {
     
     // Program @state is to use variables inside structs, because in structs we never mutate the parameters
     @State private var tapCount = 0
+    @State private var name = ""
+    @State private var selectedStudent = "Harry"
+    private let students = ["Harry", "Hermione", "Ron"]
     
     var body: some View {
         // NAVIGATION VIEW
@@ -24,20 +27,24 @@ struct FirstDayView: View {
                     Group {
                         // SECTION IS A VISUAL COMPONENT TO SEPARETE THINGS IN THE FORM
                         Section {
-                            // BASIC TEXT
-                            Text("Hello, world!").padding()
-                            Text("Hello, world!").padding()
-                            Text("Hello, world!").padding()
+                            // $ IS TO MAKE 2 WAY BINDING, TO WRITE IN NAME VARIABLE
+                            TextField("Enter your name: ", text: self.$name).padding()
+                            Text("Your name is: \(self.name)").padding()
                         }
                         
                         Section {
-                            Text("Hello, world!").padding()
-                            Text("Hello, world!").padding()
-                            Text("Hello, world!").padding()
-                            
                             // Button Element
                             Button("Taps: \(self.tapCount)") {
                                 self.tapCount += 1
+                            }
+                        }
+                        
+                        Section {
+                            Picker("Select your student", selection: self.$selectedStudent) {
+                                // \.self tells to swift that string are the 'id', that defines that id is unique
+                                ForEach(self.students, id: \.self) {
+                                    Text($0)
+                                }
                             }
                         }
                     }
