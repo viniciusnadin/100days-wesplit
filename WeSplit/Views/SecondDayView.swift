@@ -14,6 +14,9 @@ struct SecondDayView: View {
     @State private var numberOfPeople = 1
     @State private var tipPercentage = 20
     
+    // Handle input focus in UI
+    @FocusState private var amountIsFocused: Bool
+    
     private let tipPercentages = [0, 10, 15, 20, 25]
     
     // Computed property to calculate the total per person
@@ -37,6 +40,8 @@ struct SecondDayView: View {
                     // .keyboardType is a modifier
                     TextField("Amount", value: self.$checkAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
                         .keyboardType(.decimalPad)
+                    // Modifier to set to the var when this field are focused
+                        .focused(self.$amountIsFocused)
                     
                     Picker("Number of people", selection: self.$numberOfPeople) {
                         ForEach(1 ..< 100) {
@@ -65,7 +70,20 @@ struct SecondDayView: View {
                     Text("Total value for each person")
                 }
                 // We put the navigationTitle in the form because navigation view are capable of showing many views as your program runs.
-            }.navigationTitle("WeSplit")
+            }
+                .navigationTitle("WeSplit")
+            // Create a toolbar to put some itens inside it
+                .toolbar {
+                    // Create a toolbar in a specific location
+                    ToolbarItemGroup(placement: .keyboard) {
+                        // Spacer put views in a side, can be in any direction
+                        Spacer()
+                        Button("Done") {
+                            // When done button is clicked, we set the focus false and the keyboard disappear 
+                            self.amountIsFocused = false
+                        }
+                    }
+                }
         }
     }
 }
