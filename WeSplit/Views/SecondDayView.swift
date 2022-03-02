@@ -25,16 +25,32 @@ struct SecondDayView: View {
                     // .keyboardType is a modifier
                     TextField("Amount", value: self.$checkAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
                         .keyboardType(.decimalPad)
+                    
+                    Picker("Number of people", selection: self.$numberOfPeople) {
+                        ForEach(1 ..< 100) {
+                            Text("\($0)")
+                        }
+                    }
+                    // Put the header of the section
+                } header: {
+                    Text("Put the value and the number of guys")
                 }
                 
-                Picker("Number of people", selection: self.$numberOfPeople) {
-                    ForEach(1 ..< 100) {
-                        Text("\($0)")
-                    }
+                Section {
+                    // \.self tells to swift that object are 'id' and unique
+                    Picker("Tip percentage", selection: self.$tipPercentage) {
+                        ForEach(self.tipPercentages, id: \.self) {
+                            Text($0, format: .percent)
+                        }
+                    }.pickerStyle(.segmented)
+                } header: {
+                    Text("How much tip do you want to leave?")
                 }
                 
                 Section {
                     Text(self.checkAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                } header: {
+                    Text("Total value for each person")
                 }
                 // We put the navigationTitle in the form because navigation view are capable of showing many views as your program runs.
             }.navigationTitle("WeSplit")
