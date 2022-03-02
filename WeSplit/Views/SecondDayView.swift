@@ -11,10 +11,22 @@ struct SecondDayView: View {
     
     // @State because we want to read and rwite var values from struct
     @State private var checkAmount = 0.0
-    @State private var numberOfPeople = 0
+    @State private var numberOfPeople = 1
     @State private var tipPercentage = 20
     
     private let tipPercentages = [0, 10, 15, 20, 25]
+    
+    // Computed property to calculate the total per person
+    private var totalPerPerson: Double {
+        let peopleCount = Double(self.numberOfPeople + 1)
+        let tipSelection = Double(self.tipPercentage)
+        let tipValue = Double(self.checkAmount / 100 * tipSelection)
+        
+        let grandTotal = self.checkAmount + tipValue
+        let amountPerPerson = grandTotal / peopleCount
+        
+        return amountPerPerson
+    }
     
     var body: some View {
         NavigationView {
@@ -48,7 +60,7 @@ struct SecondDayView: View {
                 }
                 
                 Section {
-                    Text(self.checkAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                    Text(self.totalPerPerson, format: .currency(code: Locale.current.currencyCode ?? "USD"))
                 } header: {
                     Text("Total value for each person")
                 }
