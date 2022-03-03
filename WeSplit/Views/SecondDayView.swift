@@ -18,6 +18,7 @@ struct SecondDayView: View {
     @FocusState private var amountIsFocused: Bool
     
     private let tipPercentages = [0, 10, 15, 20, 25]
+    private let currencyFormat: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currencyCode ?? "USD")
     
     // Computed property to calculate the total per person
     private var totalPerPerson: Double {
@@ -31,6 +32,12 @@ struct SecondDayView: View {
         return amountPerPerson
     }
     
+    private var totalValue: Double {
+        let tipSelection = Double(self.tipPercentage)
+        let tipValue = Double(self.checkAmount / 100 * tipSelection)
+        return self.checkAmount + tipValue
+    }
+    
     var body: some View {
         NavigationView {
             Form {
@@ -38,7 +45,7 @@ struct SecondDayView: View {
                     // $ simple to make the variable a 2 way binding
                     // Locale.current.currencyCode gets the local currency of the device
                     // .keyboardType is a modifier
-                    TextField("Amount", value: self.$checkAmount, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                    TextField("Amount", value: self.$checkAmount, format: self.currencyFormat)
                         .keyboardType(.decimalPad)
                     // Modifier to set to the var when this field are focused
                         .focused(self.$amountIsFocused)
@@ -54,36 +61,52 @@ struct SecondDayView: View {
                 }
                 
                 Section {
-                    // \.self tells to swift that object are 'id' and unique
                     Picker("Tip percentage", selection: self.$tipPercentage) {
-                        ForEach(self.tipPercentages, id: \.self) {
+                        ForEach(0 ..< 101) {
                             Text($0, format: .percent)
                         }
-                    }.pickerStyle(.segmented)
+                    }
                 } header: {
                     Text("How much tip do you want to leave?")
                 }
                 
+                //                Section {
+                //                    // \.self tells to swift that object are 'id' and unique
+                //                    Picker("Tip percentage", selection: self.$tipPercentage) {
+                //                        ForEach(self.tipPercentages, id: \.self) {
+                //                            Text($0, format: .percent)
+                //                        }
+                //                    }.pickerStyle(.segmented)
+                //                } header: {
+                //                    Text("How much tip do you want to leave?")
+                //                }
+                
                 Section {
-                    Text(self.totalPerPerson, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                    Text(self.totalPerPerson, format: self.currencyFormat)
                 } header: {
                     Text("Total value for each person")
                 }
+                
+                Section {
+                    Text(self.totalValue, format: self.currencyFormat)
+                } header: {
+                    Text("Total value with tip")
+                }
                 // We put the navigationTitle in the form because navigation view are capable of showing many views as your program runs.
             }
-                .navigationTitle("WeSplit")
+            .navigationTitle("WeSplit")
             // Create a toolbar to put some itens inside it
-                .toolbar {
-                    // Create a toolbar in a specific location
-                    ToolbarItemGroup(placement: .keyboard) {
-                        // Spacer put views in a side, can be in any direction
-                        Spacer()
-                        Button("Done") {
-                            // When done button is clicked, we set the focus false and the keyboard disappear 
-                            self.amountIsFocused = false
-                        }
+            .toolbar {
+                // Create a toolbar in a specific location
+                ToolbarItemGroup(placement: .keyboard) {
+                    // Spacer put views in a side, can be in any direction
+                    Spacer()
+                    Button("Done") {
+                        // When done button is clicked, we set the focus false and the keyboard disappear
+                        self.amountIsFocused.toggle()
                     }
                 }
+            }
         }
     }
 }
